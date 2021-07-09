@@ -139,63 +139,45 @@ if __name__ == "__main__":
 
     @bot.message_handler(commands=['help'])
     def send_welcome(message):
-            bot.reply_to(message, "Hi and thank you for using CricBot. Using CricBot is extremely simple:\nTo retrieve player statistics type /playerstats.\nTo retrieve match statistics type /matchstats.\nHave fun!")
+        bot.reply_to(message, "Hi and thank you for using CricBot. Using CricBot is extremely simple:")
+        bot.reply_to(message, "To retrieve player statistics,type: \n/playerstats firstName lastName format. \n(Format=tests/ODIs/T20Is)")
+        bot.reply_to(message, "To retrieve match statistics,type: \n/matchstats TeamName.")
+                     
 
+    @bot.message_handler(commands=['matchstats'])
+    def send_welcome2(message):
+            team=message.text.split(" ")[1].lower()
+            matchObj=getScore()
+            matchstats=matchObj.getUniqueId(team)
+            bot.reply_to(message,"Here you go:\n"+matchstats)
+            bot.reply_to(message,"Type /help at anytime for a quick tutorial.")
 
 
     
     @bot.message_handler(commands=['playerstats'])
-    def send_welcome(message):
-            bot.reply_to(message, "Enter the player name (first name<space>last name) and format(tests/T20Is/ODIs)")
-            @bot.message_handler(func=lambda message: True)
-            def getstats(message):
-                try:
-                    playerNamefirst=message.text.split(" ")[0]
-                    playerNamelast=message.text.split(" ")[1]
-                    formt=message.text.split(" ")[2]
-                    playerName=playerNamefirst+" "+playerNamelast
-                    playerObj=getPlayer(playerName,formt)
-                    stats=playerObj.getPlayerStats()
-                    if(stats!=""):
-                        bot.reply_to(message,"Here you go:\n"+stats)
-                    else:
-                        bot.reply_to(message,"Requested data unavailable.")
-                    bot.reply_to(message,"Type /help at anytime for a quick tutorial.")
-                except Exception as e:
-                    bot.reply_to(message,"Invalid format.")
-                    bot.reply_to(message,"Type /help at anytime for a quick tutorial.")
+    def send_welcome1(message1):
+        try:
+            playerNamefirst=message1.text.split(" ")[1]
+            playerNamelast=message1.text.split(" ")[2]
+            formt=message1.text.split(" ")[3]
+            playerName=playerNamefirst+" "+playerNamelast
+            playerObj=getPlayer(playerName,formt)
+            playerstats=playerObj.getPlayerStats()
+            if(playerstats!=""):
+                bot.reply_to(message1,"Here you go:\n"+playerstats)
+            else:
+                bot.reply_to(message1,"Requested data unavailable.")
+            bot.reply_to(message1,"Type /help at anytime for a quick tutorial.")
+        except Exception as e:
+            bot.reply_to(message1,"Invalid format.")
+            bot.reply_to(message1,"Type /help at anytime for a quick tutorial.")
+            
                     
+    @bot.message_handler(func=lambda message: True)
+    def echo_all(message):
+            bot.reply_to(message, "Say what?")
 
-
-    @bot.message_handler(commands=['matchstats'])
-    def send_welcome(message):
-            bot.reply_to(message, "Enter a team name.")
-            @bot.message_handler(func=lambda message: True)
-            def getstats(message):
-                team=message.text.lower()
-                matchObj=getScore()
-                stats=matchObj.getUniqueId(team)
-                bot.reply_to(message,"Here you go:\n"+stats)
-                bot.reply_to(message,"Type /help at anytime for a quick tutorial.")    
-    
     bot.polling()
-
-
-
-
-
-
-
-    
-##    name=input("Enter the players full name:")
-##    formt=input("Enter the format(tests/T20Is/ODIs):")
-##    playerObj=getPlayer(name,formt)
-##    print("")
-##    message=playerObj.getPlayerStats()
-##    print(message)
-
-
-
 
 
     
